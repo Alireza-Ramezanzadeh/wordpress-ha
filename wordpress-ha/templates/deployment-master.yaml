@@ -20,7 +20,30 @@ spec:
           volumeMounts:
             - name: wp-data
               mountPath: /var/www/html
+        - name: rsync-sidecar
+          image: alpine:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              apk add --no-cache openssh rsync bash
+              while true; do
+                for slave in slave1.example.com slave2.example.com; do
+                  rsync -avzp -e "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa" --delete /var/www/html/wp-content/plugins/ root@$slave:/var/www/html/wp-content/plugins/
+                  rsync -avzp -e "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa" --delete /var/www/html/wp-content/themes/ root@$slave:/var/www/html/wp-content/themes/
+                done
+                sleep 30
+              done
+          volumeMounts:
+            - name: wp-data
+              mountPath: /var/www/html
+            - name: ssh-key
+              mountPath: /root/.ssh/id_rsa
+              readOnly: true
       volumes:
         - name: wp-data
           persistentVolumeClaim:
             claimName: {{ include "wordpress-ha.master.fullname" . }}-pvc
+        - name: ssh-key
+          secret:
+            secretName: ssh-private-key-secret

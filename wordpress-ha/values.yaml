@@ -1,7 +1,3 @@
-replicaCount:
-  master: 1
-  slave: 3
-
 master:
   image:
     repository: wordpress

@@ -34,6 +34,13 @@ spec:
           volumeMounts:
             - name: wp-data
               mountPath: /var/www/html
+            - name: ssh-public-key
+              mountPath: /root/.ssh/authorized_keys
+              readOnly: true
+      volumes:
+        - name: ssh-public-key
+          secret:
+            secretName: ssh-public-key-secret
   volumeClaimTemplates:
     - metadata:
         name: wp-data
