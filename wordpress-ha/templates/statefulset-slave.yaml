@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "wordpress-ha.slave.fullname" . }}
+  name: {{ .Release.Name }}-slave
   labels:
     {{- include "wordpress-ha.labels" . | nindent 4 }}
 spec:
