@@ -6,7 +6,7 @@ metadata:
     role: slave
     {{- include "wordpress-ha.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  clusterIP: None
   selector:
     role: slave
     {{- include "wordpress-ha.selectorLabels" . | nindent 4 }}
