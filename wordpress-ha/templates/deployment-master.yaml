@@ -30,8 +30,8 @@ spec:
               while true; do
                 {{- $root := . }}
                 {{- range $i, $_ := until (int $root.Values.slave.replicaCount) }}
-                  rsync -avzp -e "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa" --delete /var/www/html/wp-content/plugins/ root@{{ $root.Release.Name }}-slave-{{ $i }}:/var/www/html/wp-content/plugins/
-                  rsync -avzp -e "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa" --delete /var/www/html/wp-content/themes/ root@{{ $root.Release.Name }}-slave-{{ $i }}:/var/www/html/wp-content/themes/
+                  rsync -avzp -e "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa" --delete /var/www/html/wp-content/plugins/ root@{{ printf "%s-slave-%d.%s-wordpress-ha-slave.%s.svc.cluster.local" $root.Release.Name $i $root.Release.Name $root.Release.Namespace }}:/var/www/html/wp-content/plugins/
+                  rsync -avzp -e "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa" --delete /var/www/html/wp-content/themes/ root@{{ printf "%s-slave-%d.%s-wordpress-ha-slave.%s.svc.cluster.local" $root.Release.Name $i $root.Release.Name $root.Release.Namespace }}:/var/www/html/wp-content/themes/
                 {{- end }}
                 sleep 60
               done
