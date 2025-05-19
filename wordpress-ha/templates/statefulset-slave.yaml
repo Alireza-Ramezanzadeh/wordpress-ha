@@ -6,7 +6,7 @@ metadata:
     {{- include "wordpress-ha.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.slave.replicaCount }}
-  serviceName: {{ include "wordpress-ha.slave.fullname" . }}-headless
+  serviceName: {{ include "wordpress-ha.fullname" . }}-headless
   selector:
     matchLabels:
       app.kubernetes.io/component: wordpress-slave
