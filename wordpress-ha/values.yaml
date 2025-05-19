@@ -50,19 +50,15 @@ service:
 
 ingress:
   enabled: true
-  className: "nginx"
+  className: "traefik"
+  pathtype: ImplementationSpecific
   annotations: {}
-  rules:
-    - role: master
-      host: website-edit.domain.com
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: alireza.com
       paths:
         - path: /
-          pathType: Prefix
-    - role: slave
-      host: www.domain.com
-      paths:
-        - path: /
-          pathType: Prefix
   tls: []
 
 resources: {}
