@@ -39,6 +39,7 @@ spec:
               mountPath: /var/www/html
             - name: ssh-key
               mountPath: /root/.ssh/id_rsa
+              subPath: id_rsa
               readOnly: true
       volumes:
         - name: wp-data
@@ -46,4 +47,7 @@ spec:
             claimName: {{ include "wordpress-ha.master.fullname" . }}-pvc
         - name: ssh-key
           secret:
-            secretName: ssh-private-key-secret
+            secretName: {{ .Values.rsync.sshkeysSecretName }}
+            items:
+            - key: private_key
+              path: id_rsa

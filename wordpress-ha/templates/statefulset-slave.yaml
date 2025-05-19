@@ -36,11 +36,15 @@ spec:
               mountPath: /var/www/html
             - name: ssh-public-key
               mountPath: /root/.ssh/authorized_keys
+              subPath: authorized_keys
               readOnly: true
       volumes:
         - name: ssh-public-key
           secret:
-            secretName: ssh-public-key-secret
+            secretName: {{ .Values.rsync.sshkeysSecretName }}
+            items:
+              - key: public_key
+                path: authorized_keys
   volumeClaimTemplates:
     - metadata:
         name: wp-data

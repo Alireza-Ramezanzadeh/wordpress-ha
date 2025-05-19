@@ -96,3 +96,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+
+rsync:
+  enabled: true
+  sshkeysSecretName: ssh-keys
