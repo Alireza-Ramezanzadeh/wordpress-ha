@@ -28,7 +28,7 @@ spec:
             - |
               apk add --no-cache openssh rsync bash
               while true; do
-                {{- range $i, $_ := until .Values.slave.replicaCount }}
+                {{- range $i, $_ := until (int .Values.slave.replicaCount) }}
                   rsync -avzp -e "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa" --delete /var/www/html/wp-content/plugins/ root@{{ .Release.Name }}-slave-{{ $i }}:/var/www/html/wp-content/plugins/
                   rsync -avzp -e "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa" --delete /var/www/html/wp-content/themes/ root@{{ .Release.Name }}-slave-{{ $i }}:/var/www/html/wp-content/themes/
                 {{- end }}
