@@ -45,7 +45,7 @@ spec:
       volumes:
         - name: wp-data
           persistentVolumeClaim:
-            claimName: {{ include "wordpress-ha.master.fullname" . }}-pvc
+            claimName: {{ include "wordpress-ha.fullname" . }}-pvc
         - name: ssh-key
           secret:
             secretName: {{ .Values.rsync.sshkeysSecretName }}
