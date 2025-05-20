@@ -8,6 +8,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
+      role: master
       app.kubernetes.io/component: wordpress-master
   template:
     metadata:

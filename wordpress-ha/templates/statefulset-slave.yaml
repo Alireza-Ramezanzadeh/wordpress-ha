@@ -39,6 +39,29 @@ spec:
               mountPath: /root/.ssh/authorized_keys
               subPath: authorized_keys
               readOnly: true
+
+        - name: ssh-server
+          image: linuxserver/openssh-server:latest
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Etc/UTC"
+            - name: PASSWORD_ACCESS
+              value: "false"
+            - name: USER_NAME
+              value: "root"
+          ports:
+            - containerPort: 2222
+              name: ssh
+          volumeMounts:
+            - name: ssh-public-key
+              mountPath: /root/.ssh/authorized_keys
+              subPath: authorized_keys
+              readOnly: true
+
       volumes:
         - name: ssh-public-key
           secret:
