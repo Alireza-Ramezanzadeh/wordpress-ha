@@ -34,7 +34,11 @@ spec:
             - containerPort: 80
           volumeMounts:
             - name: wp-data
-              mountPath: /var/www/html
+              mountPath: /var/www/html/wp-content/plugins
+              subPath: plugins
+            - name: wp-data
+              mountPath: /var/www/html/wp-content/themes
+              subPath: themes
 
         {{- if .Values.rsync.enabled }}
         - name: ssh-server
