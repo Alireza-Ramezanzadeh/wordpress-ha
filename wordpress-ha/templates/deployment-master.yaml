@@ -31,7 +31,7 @@ spec:
               subPath: wp-config.php
             - name: htaccess-volume
               mountPath: /var/www/html/.htaccess
-              subPath: htaccess
+              subPath: .htaccess
         {{- if .Values.rsync.enabled }}
         - name: rsync-sidecar
           image: alpine:latest
