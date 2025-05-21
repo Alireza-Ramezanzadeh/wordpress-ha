@@ -26,6 +26,12 @@ spec:
             - name: wp-data
               mountPath: /var/www/html/wp-content/themes
               subPath: themes
+            - name: wp-config-volume
+              mountPath: /var/www/html/wp-config.php
+              subPath: wp-config.php
+            - name: htaccess-volume
+              mountPath: /var/www/html/.htaccess
+              subPath: htaccess
         {{- if .Values.rsync.enabled }}
         - name: rsync-sidecar
           image: alpine:latest
@@ -51,6 +57,18 @@ spec:
               readOnly: true
       {{- end }}
       volumes:
+        - name: wp-config-volume
+          configMap:
+            name: {{ include "wordpress.fullname" . }}-wp-config
+            items:
+              - key: wp-config.php
+                path: wp-config.php
+        - name: htaccess-volume
+          configMap:
+            name: {{ include "wordpress.fullname" . }}-htaccess
+            items:
+              - key: htaccess
+                path: .htaccess
         - name: wp-data
           persistentVolumeClaim:
             claimName: {{ include "wordpress-ha.fullname" . }}-pvc
