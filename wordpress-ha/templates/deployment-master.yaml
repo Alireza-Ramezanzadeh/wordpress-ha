@@ -32,6 +32,16 @@ spec:
             - name: htaccess-volume
               mountPath: /var/www/html/.htaccess
               subPath: .htaccess
+            - name: php-config-volume
+              mountPath: /usr/local/etc/php/conf.d/customize.ini
+              subPath: customize.ini
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.wordpressCredentialSecret.name }}
+
         {{- if .Values.rsync.enabled }}
         - name: rsync-sidecar
           image: alpine:latest
@@ -57,6 +67,12 @@ spec:
               readOnly: true
       {{- end }}
       volumes:
+        - name: php-config-volume
+          configMap:
+            name: {{ .Release.Name }}-php-config
+            items:
+              - key: customize.ini
+                path: customize.ini
         - name: wp-config-volume
           configMap:
             name: {{ include "wordpress-ha.fullname" . }}-wp-config
