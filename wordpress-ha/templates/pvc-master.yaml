@@ -4,7 +4,7 @@ metadata:
   name: {{ include "wordpress-ha.fullname" . }}-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: {{ .Values.master.storage.size }}
