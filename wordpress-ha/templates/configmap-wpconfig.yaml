@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "wordpress-ha.fullname" . }}-wp-config
   labels:
-    app.kubernetes.io/name: {{ include "wordpress.name" . }}
+    app.kubernetes.io/name: {{ include "wordpress-ha.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
   wp-config.php: |-
