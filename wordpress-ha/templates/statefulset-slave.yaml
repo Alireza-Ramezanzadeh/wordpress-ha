@@ -35,11 +35,8 @@ spec:
           volumeMounts:
             - name: wp-data
               mountPath: /var/www/html
-            - name: ssh-public-key
-              mountPath: /root/.ssh/authorized_keys
-              subPath: authorized_keys
-              readOnly: true
 
+        {{- if .Values.rsync.enabled }}
         - name: ssh-server
           image: linuxserver/openssh-server:latest
           env:
@@ -61,7 +58,8 @@ spec:
               mountPath: /root/.ssh/authorized_keys
               subPath: authorized_keys
               readOnly: true
-
+        {{- end }}
+      {{- if .Values.rsync.enabled }}        
       volumes:
         - name: ssh-public-key
           secret:
@@ -69,6 +67,7 @@ spec:
             items:
               - key: public_key
                 path: authorized_keys
+      {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: wp-data
