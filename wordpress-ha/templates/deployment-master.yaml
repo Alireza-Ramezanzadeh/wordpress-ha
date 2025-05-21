@@ -19,6 +19,10 @@ spec:
       containers:
         - name: wordpress
           image: {{ .Values.master.image.repository }}:{{ .Values.master.image.tag }}
+          securityContext:
+            runAsUser: 33
+            runAsGroup: 33
+            fsGroup: 33
           volumeMounts:
             - name: wp-data
               mountPath: /var/www/html/wp-content/plugins
