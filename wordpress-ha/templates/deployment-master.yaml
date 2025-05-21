@@ -59,13 +59,13 @@ spec:
       volumes:
         - name: wp-config-volume
           configMap:
-            name: {{ include "wordpress.fullname" . }}-wp-config
+            name: {{ include "wordpress-ha.fullname" . }}-wp-config
             items:
               - key: wp-config.php
                 path: wp-config.php
         - name: htaccess-volume
           configMap:
-            name: {{ include "wordpress.fullname" . }}-htaccess
+            name: {{ include "wordpress-ha.fullname" . }}-htaccess
             items:
               - key: htaccess
                 path: .htaccess
