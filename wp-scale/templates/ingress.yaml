@@ -28,7 +28,7 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-          - path: {{ .Values.master.adminUrl }}
+          - path: {{ $.Values.master.adminUrl | default "/wp-admin" }}
             pathType: Prefix
             backend:
               service:
