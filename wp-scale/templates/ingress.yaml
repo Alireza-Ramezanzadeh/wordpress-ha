@@ -28,6 +28,14 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
+          - path: /wp-admin
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "wp-scale.fullname" $ }}-slave
+                port:
+                  number: {{ $.Values.service.port | default 80 }}
+
           - path: {{ $.Values.master.adminUrl | default "/wp-admin" }}
             pathType: Prefix
             backend:
