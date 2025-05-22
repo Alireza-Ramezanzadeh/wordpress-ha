@@ -34,7 +34,9 @@ spec:
         - name: wordpress
           image: {{ .Values.slave.image.repository }}:{{ .Values.slave.image.tag }}
           ports:
-            - containerPort: 80
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
           volumeMounts:
             - name: wp-data
               mountPath: /var/www/html/wp-content/plugins
