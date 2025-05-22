@@ -44,6 +44,21 @@ spec:
             - name: wp-data
               mountPath: /var/www/html/wp-content/themes
               subPath: themes
+            - name: wp-config-volume
+              mountPath: /var/www/html/wp-config.php
+              subPath: wp-config.php
+            - name: htaccess-volume
+              mountPath: /var/www/html/.htaccess
+              subPath: .htaccess
+            - name: php-config-volume
+              mountPath: /usr/local/etc/php/conf.d/customize.ini
+              subPath: customize.ini
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.wordpressCredentialSecret.name }}
 
         {{- if .Values.rsync.enabled }}
         - name: ssh-server
