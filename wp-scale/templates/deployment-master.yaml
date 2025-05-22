@@ -9,13 +9,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "wp-scale.labels" . | nindent 4 }}
+      {{- include "wp-scale.labels" . | nindent 6 }}
       app.kubernetes.io/component: wordpress-master
   template:
     metadata:
       labels:
+        {{- include "wp-scale.labels" . | nindent 8 }}
         app.kubernetes.io/component: wordpress-master
-        {{- include "wp-scale.labels" . | nindent 6 }}
     spec:
       containers:
         - name: wordpress
