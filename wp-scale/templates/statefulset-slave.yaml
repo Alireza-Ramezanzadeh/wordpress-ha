@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: {{ .Release.Name }}-slave
   labels:
+    role: slave
     {{- include "wp-scale.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.slave.replicaCount }}
