@@ -7,7 +7,7 @@ metadata:
     {{- include "wp-scale.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.slave.replicaCount }}
-  serviceName: {{ include "wp-scale.fullname" . }}-headless
+  serviceName: {{ include "wp-scale.fullname" . }}-slave
   selector:
     matchLabels:
       app.kubernetes.io/component: wordpress-slave
