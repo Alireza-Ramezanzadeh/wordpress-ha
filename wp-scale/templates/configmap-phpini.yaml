@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-php-config
+  labels:
+    app.kubernetes.io/name: {{ include "wp-scale.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  customize.ini: |
+    ; Your custom PHP configuration settings go here
+    memory_limit = {{ if .Values.phpConfig -}} {{ .Values.phpConfig.memory_limit | quote }} {{- else -}} "1024M" {{- end }}
+    max_execution_time = {{ if .Values.phpConfig -}} {{ .Values.phpConfig.max_execution_time | quote }} {{- else -}} "300" {{- end }}
+    post_max_size = {{ if .Values.phpConfig -}} {{ .Values.phpConfig.post_max_size | quote }} {{- else -}} "1024M" {{- end }}
+    upload_max_filesize = {{ if .Values.phpConfig -}} {{ .Values.phpConfig.upload_max_filesize | quote }} {{- else -}} "1024M" {{- end }}
+    max_input_vars = {{ if .Values.phpConfig -}} {{ .Values.phpConfig.max_input_vars | quote }} {{- else -}} "8000" {{- end }}
+    max_input_time = {{ if .Values.phpConfig -}} {{ .Values.phpConfig.max_input_time | quote }} {{- else -}} "600" {{- end }}
