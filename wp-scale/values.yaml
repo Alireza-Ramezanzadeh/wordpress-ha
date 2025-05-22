@@ -17,7 +17,7 @@ slave:
     storageClass: standard
 
 # to read db credentials from secret
-dbSecretName: wordpress-db-secret
+dbSecretName: wordpress-credentials
 
 
 imagePullSecrets: []

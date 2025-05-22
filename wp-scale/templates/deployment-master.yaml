@@ -40,7 +40,7 @@ spec:
           {{- end }}
           envFrom:
             - secretRef:
-                name: {{ .Values.wordpressCredentialSecret.name }}
+                name: {{ .Values.dbSecretName.name }}
 
         {{- if .Values.rsync.enabled }}
         - name: rsync-sidecar
