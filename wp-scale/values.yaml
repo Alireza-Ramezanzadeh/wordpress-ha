@@ -1,8 +1,8 @@
 master:
+  adminUrl: /login-irbrok
   image:
     repository: wordpress
     tag: php8.2-apache
-  adminUrl: /login-irbrok
   storage:
     size: 10Gi
     storageClass: standard
