@@ -9,6 +9,7 @@ spec:
   type: {{ .Values.service.type }}
   selector:
     role: slave
+    app.kubernetes.io/component: wordpress-slave
     {{- include "wp-scale.selectorLabels" . | nindent 4 }}
   ports:
     - port: {{ .Values.service.port }}
