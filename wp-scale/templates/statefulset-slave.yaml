@@ -83,8 +83,27 @@ spec:
               subPath: authorized_keys
               readOnly: true
         {{- end }}
-      {{- if .Values.rsync.enabled }}        
       volumes:
+        - name: php-config-volume
+          configMap:
+            name: {{ .Release.Name }}-php-config
+            items:
+              - key: customize.ini
+                path: customize.ini
+        - name: wp-config-volume
+          configMap:
+            name: {{ include "wp-scale.fullname" . }}-wp-config
+            items:
+              - key: wp-config.php
+                path: wp-config.php
+        - name: htaccess-volume
+          configMap:
+            name: {{ include "wp-scale.fullname" . }}-htaccess
+            items:
+              - key: htaccess
+                path: .htaccess
+
+      {{- if .Values.rsync.enabled }}        
         - name: ssh-public-key
           secret:
             secretName: {{ .Values.rsync.sshkeysSecretName }}
