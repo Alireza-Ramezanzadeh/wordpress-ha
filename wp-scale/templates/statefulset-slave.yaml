@@ -30,6 +30,7 @@ spec:
                   matchLabels:
                     app.kubernetes.io/component: wordpress-slave
                 topologyKey: "kubernetes.io/hostname"
+
       containers:
         - name: wordpress
           image: {{ .Values.slave.image.repository }}:{{ .Values.slave.image.tag }}
@@ -83,6 +84,7 @@ spec:
               subPath: authorized_keys
               readOnly: true
         {{- end }}
+
       volumes:
         - name: php-config-volume
           configMap:
@@ -102,20 +104,20 @@ spec:
             items:
               - key: htaccess
                 path: .htaccess
-
-      {{- if .Values.rsync.enabled }}        
+        {{- if .Values.rsync.enabled }}
         - name: ssh-public-key
           secret:
             secretName: {{ .Values.rsync.sshkeysSecretName }}
             items:
               - key: public_key
                 path: authorized_keys
-      {{- end }}
+        {{- end }}
+
   volumeClaimTemplates:
     - metadata:
         name: wp-data
       spec:
-        accessModes: [ "ReadWriteOnce" ]
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: {{ .Values.slave.storage.size }}
