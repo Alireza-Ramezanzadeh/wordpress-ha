@@ -61,6 +61,7 @@ ingress:
     - host: alireza.com
       paths:
         - path: /
+          pathType: Prefix
   tls: []
 
 resources: {}
