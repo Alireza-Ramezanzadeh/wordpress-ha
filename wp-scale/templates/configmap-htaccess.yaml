@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "wordpress-ha.fullname" . }}-htaccess
+  name: {{ include "wp-scale.fullname" . }}-htaccess
   labels:
-    app.kubernetes.io/name: {{ include "wordpress-ha.name" . }}
+    app.kubernetes.io/name: {{ include "wp-scale.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
   htaccess: |-

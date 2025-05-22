@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "wordpress-ha.fullname" . }}-pvc
+  name: {{ include "wp-scale.fullname" . }}-pvc
 spec:
   accessModes:
     - ReadWriteOnce

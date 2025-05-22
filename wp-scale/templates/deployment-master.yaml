@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-master
   labels:
-    {{- include "wordpress-ha.labels" . | nindent 4 }}
+    {{- include "wp-scale.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -75,19 +75,19 @@ spec:
                 path: customize.ini
         - name: wp-config-volume
           configMap:
-            name: {{ include "wordpress-ha.fullname" . }}-wp-config
+            name: {{ include "wp-scale.fullname" . }}-wp-config
             items:
               - key: wp-config.php
                 path: wp-config.php
         - name: htaccess-volume
           configMap:
-            name: {{ include "wordpress-ha.fullname" . }}-htaccess
+            name: {{ include "wp-scale.fullname" . }}-htaccess
             items:
               - key: htaccess
                 path: .htaccess
         - name: wp-data
           persistentVolumeClaim:
-            claimName: {{ include "wordpress-ha.fullname" . }}-pvc
+            claimName: {{ include "wp-scale.fullname" . }}-pvc
         {{- if .Values.rsync.enabled }}
         - name: ssh-key
           secret:

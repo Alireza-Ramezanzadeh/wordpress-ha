@@ -3,20 +3,20 @@ kind: StatefulSet
 metadata:
   name: {{ .Release.Name }}-slave
   labels:
-    {{- include "wordpress-ha.labels" . | nindent 4 }}
+    {{- include "wp-scale.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.slave.replicaCount }}
-  serviceName: {{ include "wordpress-ha.fullname" . }}-headless
+  serviceName: {{ include "wp-scale.fullname" . }}-headless
   selector:
     matchLabels:
       app.kubernetes.io/component: wordpress-slave
-      {{- include "wordpress-ha.selectorLabels" . | nindent 6 }}
+      {{- include "wp-scale.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         role: slave
         app.kubernetes.io/component: wordpress-slave
-        {{- include "wordpress-ha.selectorLabels" . | nindent 8 }}
+        {{- include "wp-scale.selectorLabels" . | nindent 8 }}
     spec:
       affinity:
         podAntiAffinity:

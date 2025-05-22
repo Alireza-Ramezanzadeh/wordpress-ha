@@ -1,4 +1,4 @@
 apiVersion: v2
-name: wordpress-ha
+name: wp-scale
 version: 0.1.0
 description: High availability WordPress deployment with Master/Slave separation
