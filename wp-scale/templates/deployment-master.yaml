@@ -3,18 +3,19 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-master
   labels:
+    app.kubernetes.io/component: wordpress-master
     {{- include "wp-scale.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      role: master
+      {{- include "wp-scale.labels" . | nindent 4 }}
       app.kubernetes.io/component: wordpress-master
   template:
     metadata:
       labels:
-        role: master
         app.kubernetes.io/component: wordpress-master
+        {{- include "wp-scale.labels" . | nindent 4 }}
     spec:
       containers:
         - name: wordpress
