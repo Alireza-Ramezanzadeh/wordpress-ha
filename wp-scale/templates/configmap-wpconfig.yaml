@@ -8,17 +8,8 @@ metadata:
 data:
   wp-config.php: |-
     <?php
+    define( 'WP_CACHE', true ); // Added by WP Rocket
 
-    define( 'ARVANCLOUD_STORAGE_SETTINGS', json_encode( array(
-        'access-key' => '',
-        'secret-key' => '',
-        'endpoint-url' => '',
-        'region' => '',
-        'bucket_name' => '',
-        ) ) );
-
-    define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST']);
-    define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']);
 
     /**
     * The base configuration for WordPress
@@ -151,6 +142,18 @@ data:
     }
 
     /* That's all, stop editing! Happy publishing. */
+
+    define( 'ARVANCLOUD_STORAGE_SETTINGS', json_encode( array(
+        'access-key' => getenv_docker('ARVAN_S3_KEY', ''),
+        'secret-key' => getenv_docker('ARVAN_S3_SECRET', ''),
+        'endpoint-url' => getenv_docker('ARVAN_S3_ENDPOINT', ''),
+        'region' => getenv_docker('ARVAN_S3_REGION', ''),
+        'bucket_name' => getenv_docker('ARVAN_S3_BUCKET', ''),
+        ) ) );
+
+    define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST']);
+    define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']);
+
 
     /** Absolute path to the WordPress directory. */
     if ( ! defined( 'ABSPATH' ) ) {
