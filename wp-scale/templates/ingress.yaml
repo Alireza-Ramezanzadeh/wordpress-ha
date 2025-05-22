@@ -28,7 +28,7 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-          - path: {{ .Values.master.admin-url }}
+          - path: {{ .Values.master.adminUrl }}
             pathType: Prefix
             backend:
               service:
