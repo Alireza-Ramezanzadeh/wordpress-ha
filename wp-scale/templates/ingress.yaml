@@ -28,16 +28,21 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            {{- with .pathType }}
-            pathType: {{ . }}
-            {{- end }}
+          # 1. Everything under /wp-admin → MASTER
+          - path: /wp-admin
+            pathType: Prefix            # matches /wp-admin and any sub-path
             backend:
               service:
-                name: {{ include "wp-scale.fullname" $ }}
+                name: {{ include "wp-scale.fullname" $ }}-master
                 port:
-                  number: {{ $.Values.service.port }}
-          {{- end }}
+                  number: {{ $.Values.service.port | default 80 }}
+          # 2. All other traffic → SLAVE
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "wp-scale.fullname" $ }}-slave
+                port:
+                  number: {{ $.Values.service.port | default 80 }}
     {{- end }}
 {{- end }}
