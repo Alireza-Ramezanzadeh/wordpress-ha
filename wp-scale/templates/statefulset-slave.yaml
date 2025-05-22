@@ -4,12 +4,14 @@ metadata:
   name: {{ .Release.Name }}-slave
   labels:
     role: slave
+    app.kubernetes.io/component: wordpress-slave
     {{- include "wp-scale.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.slave.replicaCount }}
   serviceName: {{ include "wp-scale.fullname" . }}-slave
   selector:
     matchLabels:
+      role: slave
       app.kubernetes.io/component: wordpress-slave
       {{- include "wp-scale.selectorLabels" . | nindent 6 }}
   template:
