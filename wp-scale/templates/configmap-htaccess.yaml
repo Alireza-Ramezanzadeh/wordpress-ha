@@ -7,6 +7,9 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
   htaccess: |-
+    # BEGIN Utilize S3 bucket rather than localhost for "uploads" folder - Via https://tinyurl.com/s3redirect
+    RewriteRule ^wp-content/uploads/(.*)$ https://hel1.your-objectstorage.com/iranbroker/$1 [R,L]
+    # END Utilize S3 bucket
     # BEGIN WordPress
 
     RewriteEngine On
