@@ -44,11 +44,11 @@ spec:
             - name: wp-data
               mountPath: /var/www/html/wp-content/themes
               subPath: themes
-            - name: wp-config-volume
-              mountPath: /config/wp-config.php
+            - name: wp-data
+              mountPath: /var/www/html/wp-config.php
               subPath: wp-config.php
-            - name: htaccess-volume
-              mountPath: /config/.htaccess
+            - name: wp-data
+              mountPath: /var/www/html/.htaccess
               subPath: .htaccess
             - name: php-config-volume
               mountPath: /usr/local/etc/php/conf.d/customize.ini
@@ -91,18 +91,6 @@ spec:
             items:
               - key: customize.ini
                 path: customize.ini
-        - name: wp-config-volume
-          configMap:
-            name: {{ include "wp-scale.fullname" . }}-wp-config
-            items:
-              - key: wp-config.php
-                path: wp-config.php
-        - name: htaccess-volume
-          configMap:
-            name: {{ include "wp-scale.fullname" . }}-htaccess
-            items:
-              - key: htaccess
-                path: .htaccess
         - name: wp-data
           persistentVolumeClaim:
             claimName: {{ include "wp-scale.fullname" . }}-pvc

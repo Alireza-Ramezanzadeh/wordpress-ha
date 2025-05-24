@@ -45,10 +45,10 @@ spec:
             - name: wp-data
               mountPath: /var/www/html/wp-content/themes
               subPath: themes
-            - name: wp-config-volume
+            - name: wp-data
               mountPath: /var/www/html/wp-config.php
               subPath: wp-config.php
-            - name: htaccess-volume
+            - name: wp-data
               mountPath: /var/www/html/.htaccess
               subPath: .htaccess
             - name: php-config-volume
@@ -92,18 +92,6 @@ spec:
             items:
               - key: customize.ini
                 path: customize.ini
-        - name: wp-config-volume
-          configMap:
-            name: {{ include "wp-scale.fullname" . }}-wp-config
-            items:
-              - key: wp-config.php
-                path: wp-config.php
-        - name: htaccess-volume
-          configMap:
-            name: {{ include "wp-scale.fullname" . }}-htaccess
-            items:
-              - key: htaccess
-                path: .htaccess
         {{- if .Values.rsync.enabled }}
         - name: ssh-public-key
           secret:
