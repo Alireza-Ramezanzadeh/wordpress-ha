@@ -62,19 +62,9 @@ spec:
                   - '-c'
                   - >
                     set -e
-
-                    ln -sf /var/www/html/wp-content/wpfiles/wp-config.php
-                    /var/www/html/wp-config.php
-
-                    ln -sf /var/www/html/wp-content/wpfiles/.htaccess     
-                    /var/www/html/.htaccess
-
-                    # -h → change owner of the link itself; no -R so you don’t
-                    recurse
-
-                    chown -h www-data:www-data /var/www/html/wp-config.php
-                    /var/www/html/.htaccess
-
+                    ln -sf /var/www/html/wp-content/wpfiles/wp-config.php /var/www/html/wp-config.php
+                    ln -sf /var/www/html/wp-content/wpfiles/.htaccess     /var/www/html/.htaccess
+                    chown -h www-data:www-data /var/www/html/wp-config.php /var/www/html/.htaccess
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
