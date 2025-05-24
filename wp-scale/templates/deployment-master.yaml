@@ -46,10 +46,10 @@ spec:
               subPath: themes
             - name: wp-data
               mountPath: /var/www/html/wp-config.php
-              subPath: wp-config.php
+              subPathExpr: wp-config.php
             - name: wp-data
               mountPath: /var/www/html/.htaccess
-              subPath: .htaccess
+              subPathExpr: .htaccess
             - name: php-config-volume
               mountPath: /usr/local/etc/php/conf.d/customize.ini
               subPath: customize.ini
