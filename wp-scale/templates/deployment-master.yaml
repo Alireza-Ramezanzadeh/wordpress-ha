@@ -40,6 +40,39 @@ spec:
             - name: php-config-volume
               mountPath: /usr/local/etc/php/conf.d/customize.ini
               subPath: customize.ini
+          volumeMounts:
+            - name: wp-data
+              mountPath: /var/www/html/wp-content/plugins
+              subPath: plugins
+            - name: wp-data
+              mountPath: /var/www/html/wp-content/themes
+              subPath: themes
+            - name: wp-data
+              mountPath: /var/www/html/wp-content/wpfiles
+              subPath: wpfiles
+            - name: php-config-volume
+              mountPath: /usr/local/etc/php/conf.d/customize.ini
+              subPath: customize.ini
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - '-c'
+                  - >
+                    set -e
+
+                    ln -sf /var/www/html/wp-content/wpfiles/wp-config.php
+                    /var/www/html/wp-config.php
+
+                    ln -sf /var/www/html/wp-content/wpfiles/.htaccess     
+                    /var/www/html/.htaccess
+
+                    # -h → change owner of the link itself; no -R so you don’t
+                    recurse
+
+                    chown -h www-data:www-data /var/www/html/wp-config.php
+                    /var/www/html/.htaccess
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
