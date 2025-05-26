@@ -116,3 +116,6 @@ filemanager:
   enabled: false
   filemanagerPassword: '$2y$10$7IB4qWGIzRufTTuqKB21LOe.27wVAkoYVaohSlUt8gatIoKCQy6ba'
   filemanagerHost: 'filemanager.iranbroker.tech'
+  affinity:
+    enabled: true
+    type: required

@@ -26,17 +26,17 @@ spec:
 {{ toYaml .Values.nodeSelector | nindent 8 }}
 {{- end }}
 
-{{- if .Values.affinity.enabled }}
+{{- if .Values.filemanager.affinity.enabled }}
       affinity:
         podAffinity:
-{{- if eq .Values.affinity.type "required" }}
+{{- if eq .Values.filemanager.affinity.type "required" }}
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
                 matchLabels:
                   app.kubernetes.io/component: wordpress-master
                   {{- include "wp-scale.labels" . | nindent 18 }}
               topologyKey: kubernetes.io/hostname
-{{- else if eq .Values.affinity.type "preferred" }}
+{{- else if eq .Values.filemanager.affinity.type "preferred" }}
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
               podAffinityTerm:
