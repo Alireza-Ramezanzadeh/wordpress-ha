@@ -79,7 +79,6 @@ spec:
           volumeMounts:
             - mountPath: /var/www/html
               name: data
-              subPath: wordpress
           resources: {}
       volumes:
         - name: data
