@@ -97,7 +97,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 type: Opaque
 data:
-  ROOT_PASSWORD: {{ .Values.sftp.sftpPassword | b64enc | quote }}
+  ROOT_PASSWORD: {{ randAlphaNum 20 | b64enc | quote }}
 {{- end }}
 
 {{- end }}
