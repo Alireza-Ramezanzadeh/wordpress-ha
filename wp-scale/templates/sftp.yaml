@@ -87,17 +87,26 @@ spec:
 
 ---
 {{- if .Values.sftp.enabled }}
+{{- $secretName := printf "%s-sftp-secret" .Release.Name }}
+{{- $existingSecret := lookup "v1" "Secret" .Release.Namespace $secretName }}
+{{- $existingData := dict }}
+{{- if $existingSecret }}
+  {{- $existingData = $existingSecret.data }}
+{{- end }}
+{{- $rootPassword := "" }}
+{{- if hasKey $existingData "ROOT_PASSWORD" }}
+  {{- $rootPassword = index $existingData "ROOT_PASSWORD" }}
+{{- else }}
+  {{- $rootPassword = randAlphaNum 20 | b64enc }}
+{{- end }}
+
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Release.Name }}-sftp-secret
+  name: {{ $secretName }}
 type: Opaque
 data:
-{{- $secretName := printf "%s-sftp-secret" $.Release.Name }}
-{{- $existingSecret := (lookup "v1" "Secret" $.Release.Namespace $secretName) | default dict }}
-{{- $existingData := (get $ "data") | default dict }}
-{{- $RootPassword := (get $existingData "ROOT_PASSWORD") | default (randAlphaNum 20 | b64enc) }}
-  ROOT_PASSWORD: {{ $RootPassword | quote }}
+  ROOT_PASSWORD: "{{ $rootPassword }}"
 {{- end }}
 
 {{- end }}
