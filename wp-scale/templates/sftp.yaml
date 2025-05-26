@@ -1,0 +1,100 @@
+{{- if .Values.sftp.enabled }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-sftp
+  labels:
+    {{- include "wp-scale.labels" . | nindent 4 }}
+    component: sftp
+spec:
+  type: "NodePort"
+  ports:
+  - name: "ssh"
+    port: 22
+    targetPort: 22
+  selector:
+    {{- include "wp-scale.selectorLabels" . | nindent 4 }}
+    app: sftp
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Release.Name }}-sftp
+  labels:
+    app: sftp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sftp
+      component: sftp
+      {{- include "wp-scale.selectorLabels" . | nindent 6 }}
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        app: sftp
+        component: sftp
+        {{- include "wp-scale.selectorLabels" . | nindent 8 }}
+      annotations:
+
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector: {{- .Values.nodeSelector | toYaml | nindent 8 }}
+{{- end }}
+
+{{- if .Values.sftp.affinity.enabled }}
+      affinity:
+        podAffinity:
+{{- if eq .Values.sftp.affinity.type "required" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  {{- include "wp-scale.selectorLabels" . | nindent 18 }}
+              topologyKey: kubernetes.io/hostname
+{{- else if eq .Values.sftp.affinity.type "preferred" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "wp-scale.selectorLabels" . | nindent 20 }}
+                topologyKey: kubernetes.io/hostname
+{{- end }}
+{{- end }}
+
+      containers:
+        - name: sftp
+          image: wpdevops/sftp-server:latest
+          imagePullPolicy: Always
+          env:
+          - name: ROOT_PASSWORD
+              valueFrom:
+              secretKeyRef:
+                  name: {{ .Release.Name }}-sftp-secret
+                  key: ROOT_PASSWORD
+          ports:
+            - containerPort: 22
+          volumeMounts:
+          - mountPath: /var/www/html
+            name: data
+            subPath: wordpress
+
+          resources: {}
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ include "wp-scale.fullname" . }}-pvc
+
+---
+{{- if and .Values.sftp.enabled (not .Release.IsUpgrade) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-sftp-secret
+type: Opaque
+data:
+  ROOT_PASSWORD: {{ .Values.sftp.sftpPassword | b64enc | quote }}
+{{- end }}
+
+{{- end }}
