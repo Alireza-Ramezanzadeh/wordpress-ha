@@ -65,7 +65,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /srv
-              subPath: wordpress
       volumes:
         - name: data
           persistentVolumeClaim:
