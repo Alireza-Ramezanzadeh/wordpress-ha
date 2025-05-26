@@ -5,7 +5,7 @@ metadata:
   name: {{ .Release.Name }}-filemanager
   labels:
     app: filebrowser
-    {{- include "wordpress-helm.labels" . | nindent 4 }}
+    {{- include "wp-scale.labels" . | nindent 4 }}
     component: filemanager
 spec:
   replicas: 1
@@ -77,7 +77,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-filemanager
   labels:
-    {{- include "wordpress-helm.labels" . | nindent 4 }}
+    {{- include "wp-scale.labels" . | nindent 4 }}
     component: filemanager
 spec:
   type: ClusterIP
@@ -120,7 +120,7 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}-filebrowser-ingress
   labels:
-    {{- include "wordpress-helm.labels" . | nindent 4 }}
+    {{- include "wp-scale.labels" . | nindent 4 }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Release.Name }}-filebrowser-cors@kubernetescrd
