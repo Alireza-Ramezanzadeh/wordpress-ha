@@ -69,7 +69,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-data
+            claimName: {{ include "wp-scale.fullname" . }}-pvc
 
 ---
 apiVersion: v1
