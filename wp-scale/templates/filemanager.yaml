@@ -1,0 +1,144 @@
+{{- if .Values.filemanager.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-filemanager
+  labels:
+    app: filebrowser
+    {{- include "wordpress-helm.labels" . | nindent 4 }}
+    component: filemanager
+spec:
+  replicas: 1
+  selector:
+    {{- include "wordpress-helm.selectorLabels" . | nindent 4 }}
+    component: filemanager
+    matchLabels:
+      app: filebrowser
+      component: filemanager
+      {{- include "wordpress-helm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: filebrowser
+        component: filemanager
+        {{- include "wordpress-helm.selectorLabels" . | nindent 8 }}
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector: {{- .Values.nodeSelector | toYaml | nindent 8 }}
+{{- end }}
+
+{{- if .Values.affinity.enabled }}
+      affinity:
+        podAffinity:
+{{- if eq .Values.affinity.type "required" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  {{- include "wordpress-helm.selectorLabels" . | nindent 18 }}
+              topologyKey: kubernetes.io/hostname
+{{- else if eq .Values.affinity.type "preferred" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "wordpress-helm.selectorLabels" . | nindent 20 }}
+                topologyKey: kubernetes.io/hostname
+{{- end }}
+{{- end }}
+      securityContext:
+        fsGroup: 33
+        runAsUser: 33
+      containers:
+        - name: filebrowser
+          image: filebrowser/filebrowser:latest
+          ports:
+            - containerPort: 8080
+          args:
+            - '--port=8080'
+            - '--database=/tmp/database.db'
+          env:
+            - name: FB_PASSWORD
+              value: {{ .Values.filemanager.filemanagerPassword | quote }}
+          volumeMounts:
+            - name: data
+              mountPath: /srv
+              subPath: wordpress
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-filemanager
+  labels:
+    {{- include "wordpress-helm.labels" . | nindent 4 }}
+    component: filemanager
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "wordpress-helm.selectorLabels" . | nindent 4 }}
+#    app: filebrowser
+    component: filemanager
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Release.Name }}-filebrowser-cors
+spec:
+  headers:
+    accessControlAllowMethods:
+      - "GET"
+      - "OPTIONS"
+      - "PUT"
+      - "POST"
+      - "PATCH"
+      - "DELETE"
+    accessControlAllowOriginList:
+      - "*"
+    accessControlAllowHeaders:
+      - "*"
+    accessControlExposeHeaders:
+    - Location
+    - Upload-Offset
+    - Tus-Resumable
+    - Upload-Length
+    
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-filebrowser-ingress
+  labels:
+    {{- include "wordpress-helm.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Release.Name }}-filebrowser-cors@kubernetescrd
+
+spec:
+#  tls:
+#    - hosts:
+#        - {{ .Values.filemanager.filemanagerHost }}
+#      secretName: tls-secret
+  rules:
+    - host: {{ .Values.filemanager.filemanagerHost }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-filemanager
+                port:
+                  name: http
+
+{{- end }}
+
+
