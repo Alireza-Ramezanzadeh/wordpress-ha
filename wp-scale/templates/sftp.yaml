@@ -87,11 +87,14 @@ spec:
             claimName: {{ include "wp-scale.fullname" . }}-pvc
 
 ---
-{{- if and .Values.sftp.enabled (not .Release.IsUpgrade) }}
+{{- if .Values.sftp.enabled }}
 apiVersion: v1
 kind: Secret
 metadata:
   name: {{ .Release.Name }}-sftp-secret
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 type: Opaque
 data:
   ROOT_PASSWORD: {{ .Values.sftp.sftpPassword | b64enc | quote }}
