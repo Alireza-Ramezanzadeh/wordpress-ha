@@ -93,7 +93,11 @@ metadata:
   name: {{ .Release.Name }}-sftp-secret
 type: Opaque
 data:
-  ROOT_PASSWORD: {{ randAlphaNum 20 | b64enc | quote }}
+{{- $secretName := printf "%s-sftp-secret" $.Release.Name }}
+{{- $existingSecret := (lookup "v1" "Secret" $.Release.Namespace $secretName) | default dict }}
+{{- $existingData := (get $ "data") | default dict }}
+{{- $RootPassword := (get $existingData "ROOT_PASSWORD") | default (randAlphaNum 20 | b64enc) }}
+  ROOT_PASSWORD: {{ $RootPassword | quote }}
 {{- end }}
 
 {{- end }}
