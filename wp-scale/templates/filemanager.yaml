@@ -10,8 +10,6 @@ metadata:
 spec:
   replicas: 1
   selector:
-    {{- include "wordpress-helm.selectorLabels" . | nindent 4 }}
-    component: filemanager
     matchLabels:
       app: filebrowser
       component: filemanager
@@ -24,7 +22,8 @@ spec:
         {{- include "wordpress-helm.selectorLabels" . | nindent 8 }}
     spec:
 {{- if .Values.nodeSelector }}
-      nodeSelector: {{- .Values.nodeSelector | toYaml | nindent 8 }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | nindent 8 }}
 {{- end }}
 
 {{- if .Values.affinity.enabled }}
@@ -34,7 +33,8 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
                 matchLabels:
-                  {{- include "wordpress-helm.selectorLabels" . | nindent 18 }}
+                  app.kubernetes.io/component: wordpress-master
+                  {{- include "wp-scale.labels" . | nindent 18 }}
               topologyKey: kubernetes.io/hostname
 {{- else if eq .Values.affinity.type "preferred" }}
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -42,10 +42,12 @@ spec:
               podAffinityTerm:
                 labelSelector:
                   matchLabels:
-                    {{- include "wordpress-helm.selectorLabels" . | nindent 20 }}
+                    app.kubernetes.io/component: wordpress-master
+                    {{- include "wp-scale.labels" . | nindent 20 }}
                 topologyKey: kubernetes.io/hostname
 {{- end }}
 {{- end }}
+
       securityContext:
         fsGroup: 33
         runAsUser: 33
@@ -80,13 +82,14 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    {{- include "wordpress-helm.selectorLabels" . | nindent 4 }}
-#    app: filebrowser
+    app: filebrowser
     component: filemanager
+    {{- include "wordpress-helm.selectorLabels" . | nindent 4 }}
   ports:
     - name: http
       port: 80
       targetPort: 8080
+
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
@@ -106,11 +109,11 @@ spec:
     accessControlAllowHeaders:
       - "*"
     accessControlExposeHeaders:
-    - Location
-    - Upload-Offset
-    - Tus-Resumable
-    - Upload-Length
-    
+      - Location
+      - Upload-Offset
+      - Tus-Resumable
+      - Upload-Length
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -123,10 +126,6 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Release.Name }}-filebrowser-cors@kubernetescrd
 
 spec:
-#  tls:
-#    - hosts:
-#        - {{ .Values.filemanager.filemanagerHost }}
-#      secretName: tls-secret
   rules:
     - host: {{ .Values.filemanager.filemanagerHost }}
       http:
@@ -138,7 +137,4 @@ spec:
                 name: {{ .Release.Name }}-filemanager
                 port:
                   name: http
-
 {{- end }}
-
-
