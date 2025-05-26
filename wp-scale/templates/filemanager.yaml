@@ -13,13 +13,13 @@ spec:
     matchLabels:
       app: filebrowser
       component: filemanager
-      {{- include "wordpress-helm.selectorLabels" . | nindent 6 }}
+      {{- include "wp-scale.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         app: filebrowser
         component: filemanager
-        {{- include "wordpress-helm.selectorLabels" . | nindent 8 }}
+        {{- include "wp-scale.selectorLabels" . | nindent 8 }}
     spec:
 {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -84,7 +84,7 @@ spec:
   selector:
     app: filebrowser
     component: filemanager
-    {{- include "wordpress-helm.selectorLabels" . | nindent 4 }}
+    {{- include "wp-scale.selectorLabels" . | nindent 4 }}
   ports:
     - name: http
       port: 80
