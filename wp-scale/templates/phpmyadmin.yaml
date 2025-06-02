@@ -34,7 +34,7 @@ spec:
             - containerPort: 80
           env:
             - name: PMA_HOST
-              value: '{{ .Release.Name }}-mysql:3306'
+              value: {{ .Values.phpmyadmin.mysqlHost }}
 
 ---
 apiVersion: v1

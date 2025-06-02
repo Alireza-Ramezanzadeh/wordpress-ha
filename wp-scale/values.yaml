@@ -131,3 +131,4 @@ sftp:
 phpmyadmin:
   enabled: true
   phpmyadminHost: 'pma.iranbroker.tech'
+  mysqlHost: 'pxc-db-haproxy.pxc.svc.cluster.local:3306'
