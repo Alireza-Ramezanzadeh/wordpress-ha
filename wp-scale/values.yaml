@@ -126,3 +126,8 @@ sftp:
   affinity:
     enabled: true
     type: required
+
+
+phpmyadmin:
+  enabled: true
+  phpmyadminHost: 'pma.iranbroker.tech'
