@@ -14,6 +14,7 @@ slave:
     repository: wordpress
     tag: php8.2-apache
   storage:
+    enabled: false
     size: 5Gi
     storageClass: standard
 

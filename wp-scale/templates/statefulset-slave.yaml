@@ -39,8 +39,10 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           volumeMounts:
+            {{- if .Values.slave.storage.enabled }}
             - name: wp-data
               mountPath: /var/www/html/
+            {{- end }}
             - name: php-config-volume
               mountPath: /usr/local/etc/php/conf.d/customize.ini
               subPath: customize.ini
@@ -91,6 +93,7 @@ spec:
                 path: authorized_keys
         {{- end }}
 
+  {{- if .Values.slave.storage.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: wp-data
@@ -100,3 +103,4 @@ spec:
           requests:
             storage: {{ .Values.slave.storage.size }}
         storageClassName: {{ .Values.slave.storage.storageClass }}
+  {{- end }}
