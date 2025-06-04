@@ -1,5 +1,9 @@
 master:
   adminUrl: /login-irbrok
+  stageUrl: 
+    enable: false
+    host: "staging.alireza.com"
+
   image:
     repository: wordpress
     tag: php8.2-apache
