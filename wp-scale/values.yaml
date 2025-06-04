@@ -1,7 +1,7 @@
 master:
   adminUrl: /login-irbrok
   stageUrl: 
-    enable: false
+    enabled: false
     host: "staging.alireza.com"
 
   image:
