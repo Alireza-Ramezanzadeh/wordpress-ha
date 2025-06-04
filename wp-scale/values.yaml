@@ -83,7 +83,6 @@ readinessProbe:
     path: /
     port: http
 
-# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -116,7 +115,7 @@ phpConfig:
 filemanager:
   enabled: false
   filemanagerPassword: '$2y$10$7IB4qWGIzRufTTuqKB21LOe.27wVAkoYVaohSlUt8gatIoKCQy6ba'
-  filemanagerHost: 'filemanager.iranbroker.tech'
+  filemanagerHost: 'filemanager.alireza.com'
   affinity:
     enabled: true
     type: required
@@ -131,5 +130,5 @@ sftp:
 
 phpmyadmin:
   enabled: true
-  phpmyadminHost: 'pma.iranbroker.tech'
+  phpmyadminHost: 'pma.alireza.com'
   mysqlHost: 'pxc-db-haproxy.pxc.svc.cluster.local:3306'

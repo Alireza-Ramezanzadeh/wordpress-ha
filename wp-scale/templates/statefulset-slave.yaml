@@ -30,6 +30,12 @@ spec:
                   matchLabels:
                     app.kubernetes.io/component: wordpress-slave
                 topologyKey: "kubernetes.io/hostname"
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
 
       containers:
         - name: wordpress
