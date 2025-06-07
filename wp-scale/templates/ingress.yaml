@@ -40,6 +40,14 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
+          - path: /wp-login.php
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "wp-scale.fullname" $ }}-master
+                port:
+                  number: {{ $.Values.service.port | default 80 }}
+          {{- if and (ne $.Values.master.adminUrl "") (ne $.Values.master.adminUrl "/wp-admin") }}
           - path: /wp-admin
             pathType: Prefix
             backend:
@@ -47,6 +55,7 @@ spec:
                 name: {{ include "wp-scale.fullname" $ }}-master
                 port:
                   number: {{ $.Values.service.port | default 80 }}
+          {{- end }}
 
           - path: {{ $.Values.master.adminUrl | default "/wp-admin" }}
             pathType: Prefix
