@@ -36,37 +36,39 @@ spec:
             - name: php-config-volume
               mountPath: /usr/local/etc/php/conf.d/customize.ini
               subPath: customize.ini
-          {{- with .Values.volumeMounts }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           envFrom:
             - secretRef:
                 name: {{ .Values.wordpressCredentialSecret.name }}
 
-        {{- if .Values.rsync.enabled }}
-        - name: rsync-sidecar
-          image: alpine:latest
-          command:
-            - /bin/sh
-            - -c
-            - |
-              apk add --no-cache openssh rsync bash
-              while true; do
-                {{- $root := . }}
-                {{- range $i, $_ := until (int $root.Values.slave.replicaCount) }}
-                  rsync -avzp -e "ssh -p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa" --delete /var/www/html/wp-content/plugins/ root@{{ printf "%s-slave-%d.%s-headless.%s.svc.cluster.local" $root.Release.Name $i $root.Release.Name $root.Release.Namespace }}:/var/www/html/wp-content/plugins/
-                  rsync -avzp -e "ssh -p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa" --delete /var/www/html/wp-content/themes/ root@{{ printf "%s-slave-%d.%s-headless.%s.svc.cluster.local" $root.Release.Name $i $root.Release.Name $root.Release.Namespace }}:/var/www/html/wp-content/themes/
-                {{- end }}
-                sleep 60
-              done
+        {{- if .Values.s3syncer.enabled }}
+        - name: s3syncer
+          image: {{ .Values.s3syncer.image.repository }}:{{ .Values.s3syncer.image.tag }}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.wordpressCredentialSecret.name }}
+                  key: S3_KEY
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.wordpressCredentialSecret.name }}
+                  key: S3_SECRET
+            - name: S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.wordpressCredentialSecret.name }}
+                  key: S3_BUCKET
+            - name: S3_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.wordpressCredentialSecret.name }}
+                  key: S3_ENDPOINT
           volumeMounts:
             - name: wp-data
-              mountPath: /var/www/html
-            - name: ssh-key
-              mountPath: /root/.ssh/id_rsa
-              subPath: id_rsa
-              readOnly: true
-      {{- end }}
+              mountPath: {{ .Values.s3syncer.mountPath }}
+        {{- end }}
+
       volumes:
         - name: php-config-volume
           configMap:
@@ -77,11 +79,3 @@ spec:
         - name: wp-data
           persistentVolumeClaim:
             claimName: {{ include "wp-scale.fullname" . }}-pvc
-        {{- if .Values.rsync.enabled }}
-        - name: ssh-key
-          secret:
-            secretName: {{ .Values.rsync.sshkeysSecretName }}
-            items:
-            - key: private_key
-              path: id_rsa
-        {{- end }}

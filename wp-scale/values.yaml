@@ -136,3 +136,12 @@ phpmyadmin:
   enabled: true
   phpmyadminHost: 'pma.alireza.com'
   mysqlHost: 'pxc-db-haproxy.pxc.svc.cluster.local:3306'
+
+
+
+s3syncer:
+  enabled: true
+  image:
+    repository: alirezaramezanzadeh/nginx-s3syncer
+    tag: latest
+  mountPath: /var/www/html/wp-content/uploads
