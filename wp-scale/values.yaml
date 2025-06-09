@@ -142,6 +142,9 @@ phpmyadmin:
 
 s3syncer:
   enabled: true
+  service:
+    type: ClusterIP
+    port: 8080
   image:
     repository: alirezaramezanzadeh/nginx-s3syncer
     tag: latest
