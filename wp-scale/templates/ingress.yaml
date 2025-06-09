@@ -28,6 +28,16 @@ spec:
     - host: {{ .Values.master.stageUrl.host | quote }}
       http:
         paths:
+          {{- if $.Values.s3syncer.enabled }}
+          - path: /wp-content/uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "wp-scale.fullname" $ }}-s3syncer
+                port:
+                  number: {{ $.Values.s3syncer.service.port | default 8080 }}
+          {{- end}}
+
           - path: /
             pathType: Prefix
             backend:
@@ -71,5 +81,14 @@ spec:
                 name: {{ include "wp-scale.fullname" $ }}-slave
                 port:
                   number: {{ $.Values.service.port | default 80 }}
+          {{- if $.Values.s3syncer.enabled }}
+          - path: /wp-content/uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "wp-scale.fullname" $ }}-s3syncer
+                port:
+                  number: {{ $.Values.s3syncer.service.port | default 8080 }}
+          {{- end}}
     {{- end }}
 {{- end }}
