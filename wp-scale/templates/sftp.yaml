@@ -12,7 +12,7 @@ spec:
     - name: ssh
       port: 22
       targetPort: 22
-      nodePort: 30222
+      nodePort: {{ .Values.sftp.port }}
   selector:
     {{- include "wp-scale.selectorLabels" . | nindent 4 }}
     app: sftp

@@ -127,6 +127,7 @@ filemanager:
 
 sftp:
   enabled: false
+  port: 30222
   affinity:
     enabled: true
     type: required
