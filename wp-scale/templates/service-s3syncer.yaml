@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "wp-scale.fullname" . }}-s3syncer
+  labels:
+    role: s3syncer
+    {{- include "wp-scale.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app.kubernetes.io/component: wordpress-master
+    {{- include "wp-scale.labels" . | nindent 4 }}
+  ports:
+    - port: {{ .Values.s3syncer.service.port }}
+      targetPort: s3syncerhttp
+      protocol: TCP
+      name: s3syncerhttp
