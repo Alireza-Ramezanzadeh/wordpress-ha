@@ -145,4 +145,4 @@ s3syncer:
   image:
     repository: alirezaramezanzadeh/nginx-s3syncer
     tag: latest
-  mountPath: /var/www/html/wp-content/uploads
+  mountPath: /var/www/html
