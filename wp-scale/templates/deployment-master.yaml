@@ -43,13 +43,17 @@ spec:
         {{- if .Values.s3syncer.enabled }}
         - name: s3syncer
           image: {{ .Values.s3syncer.image.repository }}:{{ .Values.s3syncer.image.tag }}
+          ports:
+            - name: s3syncerhttp
+              containerPort: {{ .Values.s3syncer.service.port }}
+              protocol: TCP
           env:
-            - name: AWS_ACCESS_KEY_ID
+            - name: S3_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.wordpressCredentialSecret.name }}
                   key: S3_KEY
-            - name: AWS_SECRET_ACCESS_KEY
+            - name: S3_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.wordpressCredentialSecret.name }}
